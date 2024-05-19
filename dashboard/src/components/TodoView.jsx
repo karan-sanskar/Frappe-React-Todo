@@ -3,6 +3,12 @@ import Checkbox from '@mui/material/Checkbox';
 import CheckCircleOutlinedIcon from '@mui/icons-material/CheckCircleOutlined';
 import CircleOutlinedIcon from '@mui/icons-material/CircleOutlined';
 import { useFrappeUpdateDoc } from 'frappe-react-sdk'
+import TextField from '@mui/material/TextField';
+import dayjs from 'dayjs';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+
 
 
 const TodoView = ({ name, title, start_date_time, end_date_time }) => {
@@ -11,18 +17,11 @@ const TodoView = ({ name, title, start_date_time, end_date_time }) => {
     const [EventName, useEventName] = useState(name);
     const [ShowEvent, useEventShowEvent] = useState("show");
     const [EventSubject, useEventSubject] = useState(title);
-    const [EventStartsOn, useEventStartsOn] = useState(start_date_time ? start_date_time : "");
-    const [EventEndsOn, useEventEndsOn] = useState(end_date_time ? end_date_time : "");
+    const [EventStartsOn, useEventStartsOn] = useState(dayjs(start_date_time));
+    const [EventEndsOn, useEventEndsOn] = useState(dayjs(end_date_time));
 
     //! UPDATE FRAPPE DOC
     const { updateDoc, loading, error, isCompleted } = useFrappeUpdateDoc();
-
-    //! UPDATE THE EVENT DOC FUNCTION
-    const UpdateEventDoc = (DocName, UpdateData) => {
-        updateDoc('Event', DocName, UpdateData).then((r) => {
-            console.log(r, "Doneee")
-        })
-    }
 
     //! UPDATE EVENT STATUS
     const UpdateStatus = () => {
@@ -62,15 +61,17 @@ const TodoView = ({ name, title, start_date_time, end_date_time }) => {
 
     //! UPDATE EVENT STARTS ON
     const UpdateStartsOn = (StartsOn) => {
-        if (StartsOn != EventStartsOn) {
+        //! FORMAT DATE TO THE STANDARD FORMAT 
+        const NewStartsOn = String(StartsOn.format('YYYY-MM-DD HH:mm:ss'));
+        if (NewStartsOn != start_date_time) {
             //! UPDATE FRAPPE DOC
             updateDoc('Event',
                 EventName,
-                { starts_on: StartsOn }
+                { starts_on: NewStartsOn }
             ).then((doc) => {
                 //! SUCCESS 
                 console.log("Starts On Updated!", doc.starts_on)
-                useEventStartsOn(StartsOn);
+                useEventStartsOn(dayjs(NewStartsOn));
             }).catch((error) => {
                 //! ERROR
                 console.error(error);
@@ -80,22 +81,23 @@ const TodoView = ({ name, title, start_date_time, end_date_time }) => {
 
     //! UPDATE EVENT ENDS ON
     const UpdateEndsOn = (EndsOn) => {
-        if (EndsOn != EventEndsOn) {
+        //! FORMAT DATE TO THE STANDARD FORMAT 
+        const NewEndsOn = String(EndsOn.format('YYYY-MM-DD HH:mm:ss'));
+        if (NewEndsOn != end_date_time) {
             //! UPDATE FRAPPE DOC
             updateDoc('Event',
                 EventName,
-                { ends_on: EndsOn }
+                { ends_on: NewEndsOn }
             ).then((doc) => {
                 //! SUCCESS 
                 console.log("Ends On Updated!", doc.ends_on)
-                useEventStartsOn(EndsOn);
+                useEventEndsOn(dayjs(NewEndsOn));
             }).catch((error) => {
                 //! ERROR
                 console.error(error);
             });
         }
     }
-
 
     return (
         <div className={`todo-1 grid grid-cols-12 items-center bg-white p-2 border-b border-gray-300 ${ShowEvent}`} >
@@ -112,12 +114,12 @@ const TodoView = ({ name, title, start_date_time, end_date_time }) => {
 
             {/* SUBJECT */}
             <div className="title col-span-5">
-                <input
-                    type="text"
-                    id='subject'
-                    name='subject'
+                <TextField
+                    id="standard-basic"
+                    // label="Title"
+                    variant="standard"
+                    className='w-[90%]'
                     defaultValue={EventSubject}
-                    className='outline-0 w-full focus:underline underline-offset-[5px] decoration-gray-500'
                     onBlur={(e) => { UpdateSubject(e.target.value) }}
                 />
             </div>
@@ -125,27 +127,29 @@ const TodoView = ({ name, title, start_date_time, end_date_time }) => {
 
             {/* STARTS ON */}
             <div className="start-date-time col-span-3">
-                <input
-                    type="datetime-local"
-                    id='starts_on'
-                    name='starts_on'
-                    defaultValue={EventStartsOn}
-                    className='outline-gray-400 outline-offset-2 cursor-pointer'
-                    onBlur={(e) => { UpdateStartsOn(e.target.value) }}
-                />
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DateTimePicker
+                        // label="Select Date and Time"
+                        ampm={false}
+                        value={EventStartsOn}
+                        className='w-[80%] border-0'
+                        onChange={(StartsOn) => UpdateStartsOn(StartsOn)}
+                    />
+                </LocalizationProvider>
             </div>
             {/* END STARTS ON */}
 
             {/* ENDS ON */}
             <div className="end-date-time col-span-3">
-                <input
-                    type="datetime-local"
-                    id='starts_on'
-                    name='starts_on'
-                    defaultValue={EventEndsOn}
-                    className='outline-gray-400 outline-offset-2 cursor-pointer'
-                    onBlur={(e) => { UpdateEndsOn(e.target.value) }}
-                />
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DateTimePicker
+                        // label="Select Date and Time"
+                        ampm={false}
+                        value={EventEndsOn}
+                        className='w-[80%] border-0'
+                        onChange={(EndsOn) => UpdateEndsOn(EndsOn)}
+                    />
+                </LocalizationProvider>
             </div>
             {/* END ENDS ON */}
         </div>

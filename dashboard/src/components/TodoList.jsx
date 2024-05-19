@@ -23,8 +23,11 @@ const TodoList = () => {
 
 
     return (
-        <section className='container-main todo-list-data'>
+        <section className='todo-list-data my-8'>
             {/* TODO HEADING */}
+            <div className="todo-list-data-heading text-2xl mb-2">
+                Open ToDo
+            </div>
             <div className="todo-head grid grid-cols-12 text-sm bg-slate-100 p-2">
                 <div className="status col-span-1">
                     Status
