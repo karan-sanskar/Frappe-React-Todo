@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+/* Container Css Common  */
+.container-main {
+    width: 100%;
+    padding-right: 20px !important;
+    padding-left: 20px !important;
+    margin-right: auto !important;
+    margin-left: auto !important;
+}
+
+@media (min-width: 640px) {
+    .container-main {
+        padding-right: 15px;
+        padding-left: 15px;
+        max-width: 610px;
+    }
+}
+
+@media (min-width: 768px) {
+    .container-main {
+        max-width: 728px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .container-main {
+        max-width: 974px;
+    }
+}
+
+@media (min-width: 1280px) {
+    .container-main {
+        max-width: 1180px;
+    }
+}
+
+@media (min-width: 1536px) {
+    .container-main {
+        max-width: 1323px;
+    }
+}
