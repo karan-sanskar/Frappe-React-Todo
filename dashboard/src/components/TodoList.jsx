@@ -8,7 +8,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
 
 const TodoList = () => {
-
+    //! FRAPPE GET LIST OF THE TODO LIST 
     const { data: TodoListData, isLoading, error } = useFrappeGetDocList('Event', {
         fields: ["name", "subject", "starts_on", "ends_on", "status", "event_type"],
         filters: { "status": "Open" },
@@ -20,7 +20,6 @@ const TodoList = () => {
     // console.log(TodoListData, isLoading)
     // console.log(useFrappeAuth)
 
-    // useEffect
 
 
     return (

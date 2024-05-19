@@ -14,15 +14,6 @@ const TodoView = ({ name, title, start_date_time, end_date_time }) => {
     const [EventStartsOn, useEventStartsOn] = useState(start_date_time ? start_date_time : "");
     const [EventEndsOn, useEventEndsOn] = useState(end_date_time ? end_date_time : "");
 
-    // useEffect(() => {
-
-    //     console.log(EventSubject)
-
-    //     // return () => {
-    //     //     console.log("first")
-    //     // }
-    // }, [])
-
     //! UPDATE FRAPPE DOC
     const { updateDoc, loading, error, isCompleted } = useFrappeUpdateDoc();
 
@@ -35,33 +26,73 @@ const TodoView = ({ name, title, start_date_time, end_date_time }) => {
 
     //! UPDATE EVENT STATUS
     const UpdateStatus = () => {
-        UpdateEventDoc(EventName, { status: "Completed" })
-        setTimeout(() => {
-            useEventShowEvent("hidden")
-        }, 250);
+        //! UPDATE FRAPPE DOC
+        updateDoc('Event',
+            EventName,
+            { status: "Completed" }
+        ).then((doc) => {
+            //! SUCCESS 
+            console.log("Status Updated!", doc.status)
+            setTimeout(() => {
+                useEventShowEvent("hidden")
+            }, 250);
+        }).catch((error) => {
+            //! ERROR
+            console.error(error);
+        });
     }
 
     //! UPDATE EVENT SUBJECT
     const UpdateSubject = (Subject) => {
         if (Subject != EventSubject) {
-            useEventSubject(Subject);
-            UpdateEventDoc(EventName, { subject: Subject })
+            //! UPDATE FRAPPE DOC
+            updateDoc('Event',
+                EventName,
+                { subject: Subject }
+            ).then((doc) => {
+                //! SUCCESS 
+                console.log("Subject Updated!", doc.subject)
+                useEventSubject(Subject);
+            }).catch((error) => {
+                //! ERROR
+                console.error(error);
+            });
         }
     }
 
     //! UPDATE EVENT STARTS ON
     const UpdateStartsOn = (StartsOn) => {
         if (StartsOn != EventStartsOn) {
-            useEventStartsOn(StartsOn);
-            UpdateEventDoc(EventName, { starts_on: StartsOn })
+            //! UPDATE FRAPPE DOC
+            updateDoc('Event',
+                EventName,
+                { starts_on: StartsOn }
+            ).then((doc) => {
+                //! SUCCESS 
+                console.log("Starts On Updated!", doc.starts_on)
+                useEventStartsOn(StartsOn);
+            }).catch((error) => {
+                //! ERROR
+                console.error(error);
+            });
         }
     }
 
     //! UPDATE EVENT ENDS ON
     const UpdateEndsOn = (EndsOn) => {
         if (EndsOn != EventEndsOn) {
-            useEventStartsOn(EndsOn);
-            UpdateEventDoc(EventName, { ends_on: EndsOn })
+            //! UPDATE FRAPPE DOC
+            updateDoc('Event',
+                EventName,
+                { ends_on: EndsOn }
+            ).then((doc) => {
+                //! SUCCESS 
+                console.log("Ends On Updated!", doc.ends_on)
+                useEventStartsOn(EndsOn);
+            }).catch((error) => {
+                //! ERROR
+                console.error(error);
+            });
         }
     }
 
